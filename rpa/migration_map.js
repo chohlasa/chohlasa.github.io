@@ -323,11 +323,11 @@ d3.json('Migration_RawCategories_RPA-Counties_WiscNetMigration.json', function(d
 
 
       // Establish bounds for color scale
-      if (current_type == 'rates' // && (current_category != 'total' || current_level[0] != '0')
+      if (current_type == 'rates' && (current_category != 'total' || current_level[0] != '0')
       ) {
 	  var data_min = -25
 	  , data_max = 100;
-      } else if (current_type == 'migrants' // && (current_category != 'total' || current_level[0] != '0')
+      } else if (current_type == 'migrants' && (current_category != 'total' || current_level[0] != '0')
       ) {
 	  var data_min = -200000
 	  , data_max = 150000;
