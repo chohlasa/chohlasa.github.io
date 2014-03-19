@@ -30,12 +30,6 @@
      margin: 10px 0px 0px 0px;
    }
 
-   #mg_timeseries path {
-     stroke: #888;
-     stroke-width: 1;
-     fill: none;
-   }
-
    .mg_clear {
      clear: both;
    }
@@ -46,10 +40,45 @@
    }
 
    .mg_geoarea, rect.mg_bar {
-     stroke: #888;
-     stroke-width: 0.25px;
+     stroke: #CCC;
+     stroke-width: 1px;
    }
    
+   .axis path {
+     stroke: #888;
+     stroke-width: 1;
+     fill: none;
+   }
+
+   .ts_chartlines path {
+     stroke-width: 3;
+     stroke: #888;
+     fill: none;
+   }
+
+   path.Incoming {
+     stroke: #FDB924;
+   }
+   text.Incoming {
+     fill: #FDB924;
+     font-weight: bold;
+   }
+
+   path.Outgoing {
+     stroke: #4FB3CF;
+   }
+   text.Outgoing {
+     fill: #4FB3CF;
+     font-weight: bold;
+   }
+
+   path.Net {
+     stroke: #EE3124;
+   }
+   text.Net {
+     fill: #EE3124;
+     font-weight: bold;
+   }
 
    /* Font formattting *******************/
    #mg_box text {

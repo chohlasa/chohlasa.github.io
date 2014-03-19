@@ -94,7 +94,7 @@ function outlineCounty(fips) {
     var d_path = d3.select('#mg_geoarea' + fips).attr('d');
     g_top.append('path')
 	.attr({
-	    'stroke': 'red',
+	    'stroke': '#EE3124',
 	    'stroke-width': '1.5px',
 	    'd': d_path,
 	    'fill': 'none',

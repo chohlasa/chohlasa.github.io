@@ -37,14 +37,14 @@ d3.json('RPA_Region_net_migration_v3.json', function(data) {
 	.x(function(d,i) { return ts_x_scale(new Date(data.years[i].toString())); })
 	.y(function(d) { return ts_y_scale(d); });
 
-    ts_chart.selectAll('path')
+    ts_chart.append('g').attr('class','ts_chartlines').selectAll('path')
 	.data(combined_data)
 	.enter()
 	.append('path')
 	    .attr({'class': function(d) { return 'mg_timeseries_chartline ' + d.name; },
 		  'd': function(d) {return line(d.data)} });
 
-    ts_chart.selectAll('text')
+    ts_chart.append('g').attr('class','ts_chartlablels').selectAll('text')
 	.data(combined_data)
 	.enter()
 	.append('text')
@@ -53,7 +53,7 @@ d3.json('RPA_Region_net_migration_v3.json', function(data) {
 		  'y': function(d) { return ts_y_scale(d.data[d.data.length -1]); },
 		  'x': (ts_w + 5) });
 
-    ts_chart.append('g').call(ts_x_axis).attr('transform', 'translate (0,' + ts_y_scale(0) + ')');
-    ts_chart.append('g').call(ts_y_axis);
+    ts_chart.append('g').attr('class', 'axis').call(ts_x_axis).attr('transform', 'translate (0,' + ts_y_scale(0) + ')');
+    ts_chart.append('g').attr('class', 'axis').call(ts_y_axis);
 
 });
