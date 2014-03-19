@@ -4,6 +4,8 @@ var ts_margin = {top: 40, right:60, bottom:10, left:65}
 , ts_w = 490 - ts_margin.right - ts_margin.left
 , ts_h = 260 - ts_margin.top - ts_margin.bottom;
 
+d3.select("#mg_svg_timeseries").attr({'width': 490, 'height': 260});
+
 d3.select('#mg_timeseries_title').attr({'y': 25, 'x': ts_margin.left-50});
 ts_chart = d3.select('#mg_timeseries_chart').attr({'transform': 'translate (' + ts_margin.left + ',' + ts_margin.top + ')'});
 
