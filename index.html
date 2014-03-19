@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <script src="d3.js" charset="utf-8"></script>
+
+  <script type="text/javascript" src="//use.typekit.net/bmv5wyx.js"></script>
+  <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+	
+  <style>
+		
+   body {
+     padding: 0px 15px;
+   }
+
+   /* Description box */
+   .mg_description {
+     width: 410px;
+     float: left;
+     position: relative;
+     z-index: 10;
+   }
+
+   /* Timeseries box */
+   #mg_timeseries {
+     width: 490px;
+     height: 260px;
+     background-color: #E8E8E8;
+     float: left;
+     margin: 10px 0px 0px 0px;
+   }
+
+   #mg_timeseries path {
+     stroke: #888;
+     stroke-width: 1;
+     fill: none;
+   }
+
+   .mg_clear {
+     clear: both;
+   }
+   
+   /* Colors ****************** */		
+   #mg_bknd {
+     fill: #E8E8E8;
+   }
+
+   .mg_geoarea, rect.mg_bar {
+     stroke: #888;
+     stroke-width: 0.25px;
+   }
+   
+
+   /* Font formattting *******************/
+   #mg_box text {
+     fill: #3F3F3F;
+   }
+
+   #mg_title {
+     font-size: 2em;
+     font-weight: 900;
+     margin: 15px 0px;
+     fill: dimgray;
+   }
+
+   text.mg_bar,
+   #mg_timeseries_chart text {
+     font-size: 0.7em;
+   }
+   
+   .mg_bold {
+     font-weight: 700;
+   }
+   
+   #mg_county_name {
+     font-size: 1.5em;	
+   }
+
+   .mg_link_data,
+   .mg_link_county,
+   .mg_link {
+     color: blue;
+     text-decoration: underline;
+   }
+
+   /* Description text */
+   .mg_description p {
+     background-color: white;
+     padding: 10px 10px 10px 10px;
+     margin: 0px;
+   }
+
+   /* HTML dropdowns on top of SVG *******************/
+   #mg_box {
+     position: relative;
+   }
+
+   .mg_dropdown {
+     position: absolute;
+     margin: 0px;
+     padding: 0px;
+   }
+
+   /* Cursor interaction *******************/
+   .mg_dropdown,
+   .mg_geoarea,
+   .mg_bar,
+   .mg_link {
+     cursor:pointer;
+   }
+		
+  </style>
+	
+  <script type="text/javascript" src="shared_functions.js"></script>
+
+  <script type="text/javascript" src="jquery-1.11.0.min.js"></script>
+  <script type="text/javascript" src="jquery-scrolltofixed-min.js"></script>
+
+</head>
+
+
+<body>
+
+  <div id="net_mg">
+    <p id='mg_title'>Net Migration in the RPA Region</p>
+    <div class="mg_description">
+      <p>Migration patterns have changed dramatically.</p>
+      <p>A convergence of demographic and economic changes are disrupting traditional migration patterns – young, single adults and immigrants moving to cities for jobs and school, second-generation families moveing to the suburbs to own a home and raise their children, and the elderly moving to warmer climates.</p>
+      <p>People are marrying later and having fewer children. Adults in their twenties and thirties are making different choices than their parents, preferring urban centers, driving less and renting more. New immigrants are more frequently moving directly to suburban communities where forerunners from their home countries have already established roots. Cities have become more attractive generally as crime has decreased, transit and other services have improved, and as urban economies have grown stronger.</p>
+      <p>These changes are starting to re-shape the region’s settlement patterns, reinforcing some long-term trends and reversing others.</p>
+    </div>
+    <div class="mg_clear"></div>
+    <div class="mg_description">
+      <p>More people are still leaving than coming, but not as fast as in the past.</p>
+      <p>The number of people moving into the region increased by 81% over the last two decades. The number of people leaving the region also increased, but only by 22%. There were still more people leaving than coming, but the rate of net outmigration shrank substantially from 128,000 in 1993 to 81,000 in 2010. For New York City, net outmigration was cut nearly in half from 94.000 to 56,000.</p>
+      <p>Despite this out-migration, the population of the tri-state region has grown thanks to high birth rates.</p>
+    </div>
+    <div id='mg_timeseries'>
+      <svg id="mg_svg_timeseries">
+	<text id="mg_timeseries_title">Net migration over time, RPA Region</text>
+	<g id="mg_timeseries_chart"></g>
+      </svg>
+    </div>
+    <div class="mg_clear"></div>
+    <div id='mg_box'>
+      <svg id="mg_svg">
+	<rect id="mg_bknd" />
+	<text id="mg_select_title">Select options:</text>
+	<text id="mg_bar_header" class="mg_bold"></text>
+	<g id="mg_map_g"></g>
+	<g id="mg_top_g">
+	  <g id="mg_county_g">
+	    <text id="mg_county_name" class="mg_bold"></text>
+	    <text id="mg_county_desc"></text>
+	    <text id="mg_county_year"></text>
+	    <text id="mg_county_data"></text>
+	  </g>
+	</g>
+	<g id="mg_bar_g">
+	  <g id="mg_bar_chart">
+	    <g id="mg_bar_rects"></g>
+	    <g id="mg_bar_numbers"></g>
+	  </g>
+	  <g id="mg_bar_labels"></g>
+	</g>
+      </svg>
+      <select class="year mg_dropdown"></select>
+      <select class="type mg_dropdown"></select>
+      <select class="category mg_dropdown"></select>
+    </div>
+
+    <div class="mg_description">
+      <p><span class="mg_link total_rates_25_34 all">Young adults</span> are moving to the region’s urban core while <span class="mg_link total_rates_65_79 all">older adults</span> are moving to the outer suburbs.</p>
+      <p>Most counties in the region experienced only modest net inmigration or out-migration between 2000 and 2010. The only county to experience a rapid rate of in-migration was <span class="mg_link total_rates_0_79 Ocean">Ocean County</span> along the central New Jersey coast. Counties with the highest rates of out-migration were the Bronx, Brooklyn and Queens in New York City and Essex and Passaic counties in northern New Jersey.</p>
+
+      <p><span class="mg_link black_rates_0_79 all">African-Americans</span> and <span class="mg_link hispanic_rates_0_79 all">Hispanics</span> are both moving out from the region’s core, while <span class="mg_link white_rates_0_79 all">whites</span> are moving out of the region altogether.</p>
+      <p>While African-Americans and Hispanics are still concentrated in the region’s cities, they are increasingly moving to the suburbs. Three of the outermost suburban counties – <span class="mg_link black_rates_0_79 Warren">Warren</span>, <span class="mg_link black_rates_0_79 Sussex">Sussex</span> and <span class="mg_link black_rates_0_79 Putnam">Putnam</span> – have the highest rates of net in-migration for African-Americans, while New York City and Northern New Jersey are experiencing some of the highest rates of net out-migration by African-Americans.</p>
+      <p>Most counties in the region had a net in-migration of Hispanics, with the highest rates on the periphery. Only <span class="mg_link hispanic_rates_0_79 NewYork">Manhattan</span>, <span class="mg_link hispanic_rates_0_79 Kings">Brooklyn</span>, <span class="mg_link hispanic_rates_0_79 Queens">Queens</span> and <span class="mg_link hispanic_rates_0_79 Hudson">Hudson County</span> had net out-migration.</p>
+      <p>By contrast, all but three counties had net white out-migration.</p>
+      <p>The reasons for these divergent migtration patterns are complex. New York City’s improved economy and quality of life reinforced its attraction for young adults, and moderated out-migration by other groups. Growing racial and ethnic diversity in the suburbs is at least partly the result of recent immigrants following the pattern of previous nationalities in seeking a more suburban lifestyle, but rising housing costs in many city neighborhoods also might be a factor. Different rates of housing production, including the type and cost, also contribute to shifts in migration.</p>
+    </div>
+  </div>
+<script>
+
+ // Global Variables
+ var svg_width = 900, svg_height = 500
+ , region_names = ['RPA Region', 'New York City', 'Suburbs']
+ , county_selected = false
+ , county_selected_FIPS = ""
+ , barchart_panel = 20 // Make this match the mg_description left: attribute
+ , column_offset = 120 
+ , second_column = barchart_panel + column_offset
+ , bar_chart_width = 380 - column_offset
+ , line_placement = 10
+ , line_height = 20
+ , boundaryList = []
+ , transition_time = 300;
+</script>
+
+<script type="text/javascript" src="migration_map.js"></script>
+<script type="text/javascript" src="migration_timeseries.js"></script>
+
+<script type="text/javascript">
+ $(window).load(function(){
+   var last_div = $('.mg_description').length - 1;
+   $('.mg_description').eq(last_div).height($('.mg_description').eq(last_div).height() + $(window).height());
+
+   $(document).ready(function() { // Must wait for Typekit to load for scrolltoFixed to capture correct div heights
+     $('#mg_box').scrollToFixed({ marginTop: 16, zIndex: 0, limit: $('.mg_description').eq(last_div).offset().top + $('.mg_description').eq(last_div).height() + 5000 })
+   });
+
+ });  
+
+</script>
+</body>
+</html>
