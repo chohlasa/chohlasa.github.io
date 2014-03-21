@@ -275,7 +275,8 @@ d3.json('Migration_RawCategories_RPA-Counties_WiscNetMigration.json', function(d
     };
     // Populate category dropdown
     line_placement = 25;
-    var extraCategories = [['All categories','total','0-79'], ['Ages 25-34', 'total','25-34'], ['Ages 65+','total','65-79']]
+    var extraCategories = [['All categories','total','0-79'], ['Under 20', 'total', '0-19'], ['Ages 20-34', 'total','20-34'], ['Ages 35-49', 'total', '35-49'],
+			   ['Ages 50-64', 'total', '50-64'], ['Ages 65+','total','65-79']]
     function addCategory(type,text,category,level) {
       d3.select('.category.mg_dropdown').append('option')
 			  .text(text.toProperCase())
@@ -323,14 +324,17 @@ d3.json('Migration_RawCategories_RPA-Counties_WiscNetMigration.json', function(d
 
 
       // Establish bounds for color scale
-      if (current_type == 'rates' && (current_category != 'total' || current_level[0] != '0')
-      ) {
-	  var data_min = -25
-	  , data_max = 100;
-      } else if (current_type == 'migrants' && (current_category != 'total' || current_level[0] != '0')
-      ) {
+      // Test to make sure this is not the "All Categories" category
+      if (current_category != 'total' || current_level[0] != '0' || current_level[1] != '79') {
+	// Set fixed scales for most categories
+	if (current_type == 'rates') {
+	    var data_min = -25
+	    , data_max = 100;
+	} else if (current_type == 'migrants') {
 	  var data_min = -200000
 	  , data_max = 150000;
+	}
+      // Flexible scale for "All Categories", to display maximum information
       } else {
 	  var data_min = d3.min(this_data, function(d) {return d.value}),
 	  data_max = d3.max(this_data, function(d) {return d.value});
