@@ -2,7 +2,9 @@
 // Establish canvas parameters
 var margin = {top: 30, right:10, bottom:0, left:440}
 , w = svg_width - margin.right - margin.left
-, h = svg_height - margin.top - margin.bottom;
+, h = svg_height - margin.top - margin.bottom
+, bar_chart_width = 380 - column_offset
+, legend_width = svg_width - margin.left - 225;
 
 // Set location of 
 var county_x = w-260
@@ -12,14 +14,14 @@ var county_x = w-260
 var projection = d3.geo.conicConformal()
 		     .rotate([74,0])
 		     .scale(1)
-		     .translate([0,0]),						
-path = d3.geo.path()
-	   .projection(projection),
-color = d3.scale.linear().range(["#4FB3CF", "white", "#FDB924"]),
-max_legend = d3.scale.quantile(),
-min_legend = d3.scale.quantile(),
-legend_x_func = d3.scale.linear().range([0,bar_chart_width]).domain([-1,1]),
-bar_order = d3.scale.ordinal()
+		     .translate([0,0])
+, path = d3.geo.path()
+	   .projection(projection)
+, color = d3.scale.linear().range(["#4FB3CF", "white", "#FDB924"])
+, legend_scale = d3.scale.linear().range([0,legend_width])
+, bar_scale = d3.scale.linear().range([0,bar_chart_width])
+, bar_order = d3.scale.ordinal()
+, scale_axis = d3.svg.axis().orient('bottom').ticks(5);
 
 // Transform base elements
 var svg = d3.select('#mg_svg') // Enclosing svg
@@ -28,12 +30,13 @@ var svg = d3.select('#mg_svg') // Enclosing svg
 g = d3.select('#mg_map_g').attr('transform','translate (' + margin.left + ',' + margin.top + ')') // Map g
 g_top = d3.select('#mg_top_g')	// g for elements above map
 	    .attr("transform",'translate (' + margin.left + ',' + margin.top + ')'), 
-county_g = d3.select('#mg_county_g') 	// g for the timeseries				
-		   .attr("transform",'translate (' + county_x + ',' + county_y + ')'),
-scale_g = d3.select('#mg_scale_g') 	// g in county_g for scale elements
-	      .attr("transform", 'translate (0,50)'),
 bar_g = d3.select('#mg_bar_g')
-	    .attr("transform", 'translate (' + barchart_panel + ', ' + (margin.top + 10) + ')');
+	    .attr("transform", 'translate (' + barchart_panel + ', ' + (margin.top + 10) + ')'),
+county_g = d3.select('#mg_county_g') 	// g for the timeseries				
+		   .attr("transform",'translate (' + (margin.left + county_x) + ',' + (margin.top + county_y) + ')'),
+scale_g = d3.select('#mg_scale_g')
+		   .attr("transform", 'translate (' + (margin.left + county_x) + ',' + (margin.top + county_y + line_height*4.5) + ')');
+d3.select('#mg_scale_axis').attr("transform", 'translate (0,16)');
 
 ////  Set size of svg		
 d3.select('#mg_bknd').attr({ 'width': w + margin.left + margin.right,
@@ -302,6 +305,7 @@ d3.json('Migration_RawCategories_RPA-Counties_WiscNetMigration.json', function(d
 
     function updateMig(category,type,level) {
 
+
       if (current_level[0] != level[0]) {
 	  $('.category.mg_dropdown').val(category + "_" + level[0] + '-' + level[1]);
       }
@@ -317,39 +321,36 @@ d3.json('Migration_RawCategories_RPA-Counties_WiscNetMigration.json', function(d
       current_level = level;
       var age_range = level[0] + '-' + level[1];
 
+      // Establish fixed bounds for color scale
+	if (current_type == 'rates') {
+	    var data_min = -30
+	    , data_max = 100;
+	} else if (current_type == 'migrants') {
+	    var data_min = -200000
+	    , data_max = 225000;
+      	}
+
+      // Draw scale
+      color.domain([data_min, 0, data_max]);
+      bar_scale.domain([data_min,data_max]);
+      legend_scale.domain([data_min, data_max]);
+
+      scale_axis.scale(legend_scale);
+      d3.select('#mg_scale_axis').call(scale_axis);
+
+      d3.select("#scale_neg_rect").attr({
+	  'x': legend_scale(data_min),
+	  'width': legend_scale(0)
+      });
+      d3.select("#scale_pos_rect").attr({
+	  'x': legend_scale(0),
+	  'width': (legend_scale(data_max)-legend_scale(0))
+      });
+
       updateHeaders(current_type, current_category, current_level, current_year)
       
       // CALCULATE DATA FROM SELECTION
-      var this_data = data_summer(data[current_year],type,category,level);
-
-
-      // Establish bounds for color scale
-      // Test to make sure this is not the "All Categories" category
-      if (current_category != 'total' || current_level[0] != '0' || current_level[1] != '79') {
-	// Set fixed scales for most categories
-	if (current_type == 'rates') {
-	    var data_min = -25
-	    , data_max = 100;
-	} else if (current_type == 'migrants') {
-	  var data_min = -200000
-	  , data_max = 150000;
-	}
-      // Flexible scale for "All Categories", to display maximum information
-      } else {
-	  var data_min = d3.min(this_data, function(d) {return d.value}),
-	  data_max = d3.max(this_data, function(d) {return d.value});
-      }
-
-      if (data_min < 0) {
-	color.domain([data_min, 0, data_max]);
-      } else {
-	color.domain([-0.1, data_min, data_max]);
-      }
-
-      // Draw scale
-      var power = Math.log(data_max-data_min);
-      legend_x_func.domain([data_min,data_max]);
-      
+      var this_data = data_summer(data[current_year],type,category,level);      
       
       // Update bars
       fips_list = []; // Make ordered list for sorting bars
@@ -363,8 +364,8 @@ d3.json('Migration_RawCategories_RPA-Counties_WiscNetMigration.json', function(d
 	   .duration(transition_time)
 	   .attr({
 	y: function(d) {return bar_order(d.FIPS)},
-	x: function(d) {return (d.value > 0) ? legend_x_func(0) : legend_x_func(d.value)},
-	width: function(d) {return Math.abs(legend_x_func(d.value)-legend_x_func(0))},
+	x: function(d) {return (d.value > 0) ? bar_scale(0) : bar_scale(d.value)},
+	width: function(d) {return Math.abs(bar_scale(d.value)-bar_scale(0))},
 	fill: function(d) {return color(d.value)}
       })
       bar_numbers // Update numbers
@@ -374,7 +375,7 @@ d3.json('Migration_RawCategories_RPA-Counties_WiscNetMigration.json', function(d
 					 .text(function(d) {return toCommas(d.value)})
 									     .attr({ 
 	y: function(d) {return bar_order(d.FIPS) + 8},
-	x: function(d) {return (d.value > 0) ? legend_x_func(d.value) + 5 : legend_x_func(d.value) - 5 },
+	x: function(d) {return (d.value > 0) ? bar_scale(d.value) + 5 : bar_scale(d.value) - 5 },
 	'text-anchor': function(d) {return (d.value > 0) ? "start" : "end"}
       });
       bar_labels // Update labels
@@ -412,7 +413,7 @@ d3.json('Migration_RawCategories_RPA-Counties_WiscNetMigration.json', function(d
     }
       
     // Default selection (run this when opening page)
-    updateMig('total','rates',['0','79']);
+    updateMig('total','rates',['20','34']);
     
   })		
   

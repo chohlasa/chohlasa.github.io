@@ -93,7 +93,8 @@
    }
 
    text.mg_bar,
-   #mg_timeseries_chart text {
+   #mg_timeseries_chart text,
+   .axis text {
      font-size: 0.7em;
    }
    
@@ -161,7 +162,7 @@
     <div class="mg_clear"></div>
     <div class="mg_description">
       <p>More people are still leaving than coming, but not as fast as in the past.</p>
-      <p>The number of people moving into the region increased by 81% over the last two decades. The number of people leaving the region also increased, but only by 22%. There were still more people leaving than coming, but the rate of net outmigration shrank substantially from 128,000 in 1993 to 81,000 in 2010. For New York City, net outmigration was cut nearly in half from 94.000 to 56,000.</p>
+      <p>The number of people moving into the region increased by 81% over the last two decades. The number of people leaving the region also increased, but only by 22%. There were still more people leaving than coming, but the rate of net outmigration shrank substantially from 128,000 in 1993 to 81,000 in 2010. For New York City, net outmigration was cut nearly in half from 94,000 to 56,000.</p>
       <p>Despite this out-migration, the population of the tri-state region has grown thanks to high birth rates.</p>
     </div>
     <div id='mg_timeseries'>
@@ -173,17 +174,32 @@
     <div class="mg_clear"></div>
     <div id='mg_box'>
       <svg id="mg_svg">
+	<defs>
+	  <lineargradient id="neg_gradient" x1="0%" y1="0%" x2="100%" y2="0%" spreadMethod="pad">
+	    <stop offset="0%" stop-color="#4FB3CF" stop-opacity="1"></stop>
+	    <stop offset="100%" stop-color="white" stop-opacity="1"></stop>
+	  </lineargradient>
+	  <lineargradient id="pos_gradient" x1="0%" y1="0%" x2="100%" y2="0%" spreadMethod="pad">
+	    <stop offset="0%" stop-color="white" stop-opacity="1"></stop>
+	    <stop offset="100%" stop-color="#FDB924" stop-opacity="1"></stop>
+	  </lineargradient>
+	</defs>
 	<rect id="mg_bknd" />
 	<text id="mg_select_title">Select options:</text>
 	<text id="mg_bar_header" class="mg_bold"></text>
 	<g id="mg_map_g"></g>
+	<g id="mg_county_g">
+	  <text id="mg_county_name" class="mg_bold"></text>
+	  <text id="mg_county_desc"></text>
+	  <text id="mg_county_year"></text>
+	  <text id="mg_county_data"></text>
+	</g>
+	<g id="mg_scale_g">
+	  <g id="mg_scale_axis" class="axis"></g>
+	  <rect id="scale_neg_rect" height='14' fill="url(#neg_gradient)"></rect>
+	  <rect id="scale_pos_rect" height='14' fill="url(#pos_gradient)"></rect>
+	</g>
 	<g id="mg_top_g">
-	  <g id="mg_county_g">
-	    <text id="mg_county_name" class="mg_bold"></text>
-	    <text id="mg_county_desc"></text>
-	    <text id="mg_county_year"></text>
-	    <text id="mg_county_data"></text>
-	  </g>
 	</g>
 	<g id="mg_bar_g">
 	  <g id="mg_bar_chart">
@@ -199,8 +215,8 @@
     </div>
 
     <div class="mg_description">
-      <p><span class="mg_link total_rates_25_34 all">Young adults</span> are moving to the region’s urban core while <span class="mg_link total_rates_65_79 all">older adults</span> are moving to the outer suburbs.</p>
-      <p>Most counties in the region experienced only modest net inmigration or out-migration between 2000 and 2010. The only county to experience a rapid rate of in-migration was <span class="mg_link total_rates_0_79 Ocean">Ocean County</span> along the central New Jersey coast. Counties with the highest rates of out-migration were the Bronx, Brooklyn and Queens in New York City and Essex and Passaic counties in northern New Jersey.</p>
+      <p><span class="mg_link total_rates_20_34 all">Young adults</span> are moving to the region’s urban core while <span class="mg_link total_rates_65_79 all">older adults</span> are moving to the outer suburbs.</p>
+      <p>Most counties in the region experienced only modest net inmigration or out-migration between 2000 and 2010. The only county to experience a rapid rate of in-migration was <span class="mg_link total_rates_0_79 Ocean">Ocean County</span> along the central New Jersey coast. Counties with the highest rates of out-migration were the <span class="mg_link total_rates_0_79 Bronx">Bronx</span>, <span class="mg_link total_rates_0_79 Kings">Brooklyn</span> and <span class="mg_link total_rates_0_79 Queens">Queens</span> in New York City and <span class="mg_link total_rates_0_79 Essex">Essex</span> and <span class="mg_link total_rates_0_79 Passaic">Passaic</span> counties in northern New Jersey.</p>
 
       <p><span class="mg_link black_rates_0_79 all">African-Americans</span> and <span class="mg_link hispanic_rates_0_79 all">Hispanics</span> are both moving out from the region’s core, while <span class="mg_link white_rates_0_79 all">whites</span> are moving out of the region altogether.</p>
       <p>While African-Americans and Hispanics are still concentrated in the region’s cities, they are increasingly moving to the suburbs. Three of the outermost suburban counties – <span class="mg_link black_rates_0_79 Warren">Warren</span>, <span class="mg_link black_rates_0_79 Sussex">Sussex</span> and <span class="mg_link black_rates_0_79 Putnam">Putnam</span> – have the highest rates of net in-migration for African-Americans, while New York City and Northern New Jersey are experiencing some of the highest rates of net out-migration by African-Americans.</p>
@@ -219,7 +235,6 @@
  , barchart_panel = 20 // Make this match the mg_description left: attribute
  , column_offset = 120 
  , second_column = barchart_panel + column_offset
- , bar_chart_width = 380 - column_offset
  , line_placement = 10
  , line_height = 20
  , boundaryList = []
