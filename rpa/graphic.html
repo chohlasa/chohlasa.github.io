@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <script src="d3.js" charset="utf-8"></script>
+
+  <script type="text/javascript" src="//use.typekit.net/bmv5wyx.js"></script>
+  <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+  <script type="text/javascript" src="jquery-1.11.0.min.js"></script>
+	
+  <style>
+
+   body {
+     margin: 0px;
+   }
+
+   .mg_clear {
+     clear: both;
+   }
+   
+   /* Colors ****************** */		
+   #mg_bknd {
+     fill: #E8E8E8;
+   }
+
+   .mg_geoarea, rect.mg_bar {
+     stroke: #CCC;
+     stroke-width: 1px;
+   }
+   
+   .axis path {
+     stroke: #888;
+     stroke-width: 1;
+     fill: none;
+   }
+
+   .ts_chartlines path {
+     stroke-width: 3;
+     stroke: #888;
+     fill: none;
+   }
+
+   path.Incoming {
+     stroke: #FDB924;
+   }
+   text.Incoming {
+     fill: #FDB924;
+     font-weight: bold;
+   }
+
+   path.Outgoing {
+     stroke: #4FB3CF;
+   }
+   text.Outgoing {
+     fill: #4FB3CF;
+     font-weight: bold;
+   }
+
+   path.Net {
+     stroke: #EE3124;
+   }
+   text.Net {
+     fill: #EE3124;
+     font-weight: bold;
+   }
+
+   /* Font formattting *******************/
+   #mg_box text {
+     fill: #3F3F3F;
+   }
+
+   #mg_title {
+     font-size: 2em;
+     font-weight: 900;
+     margin: 15px 0px;
+     fill: dimgray;
+   }
+
+   text.mg_bar,
+   #mg_timeseries_chart text,
+   .axis text {
+     font-size: 0.7em;
+   }
+   
+   .mg_bold {
+     font-weight: 700;
+   }
+   
+   #mg_county_name {
+     font-size: 1.5em;	
+   }
+
+   .mg_link_data,
+   .mg_link_county,
+   .mg_link {
+     color: blue;
+     text-decoration: underline;
+   }
+
+   /* Description text */
+   .mg_description p {
+     background-color: white;
+     padding: 10px 10px 10px 10px;
+     margin: 0px;
+   }
+
+   /* HTML dropdowns on top of SVG *******************/
+   #mg_box {
+     position: relative;
+   }
+
+   .mg_dropdown {
+     position: absolute;
+     margin: 0px;
+     padding: 0px;
+   }
+
+   /* Cursor interaction *******************/
+   .mg_dropdown,
+   .mg_geoarea,
+   .mg_bar,
+   .mg_link {
+     cursor:pointer;
+   }
+		
+  </style>
+	
+  <script type="text/javascript" src="shared_functions.js"></script>
+
+</head>
+
+
+<body>
+
+    <div id='mg_box'>
+      <svg id="mg_svg">
+	<defs>
+	  <lineargradient id="neg_gradient" x1="0%" y1="0%" x2="100%" y2="0%" spreadMethod="pad">
+	    <stop offset="0%" stop-color="#4FB3CF" stop-opacity="1"></stop>
+	    <stop offset="100%" stop-color="white" stop-opacity="1"></stop>
+	  </lineargradient>
+	  <lineargradient id="pos_gradient" x1="0%" y1="0%" x2="100%" y2="0%" spreadMethod="pad">
+	    <stop offset="0%" stop-color="white" stop-opacity="1"></stop>
+	    <stop offset="100%" stop-color="#FDB924" stop-opacity="1"></stop>
+	  </lineargradient>
+	</defs>
+	<rect id="mg_bknd" />
+	<text id="mg_select_title">Select options:</text>
+	<text id="mg_bar_header" class="mg_bold"></text>
+	<g id="mg_map_g"></g>
+	<g id="mg_county_g">
+	  <text id="mg_county_name" class="mg_bold"></text>
+	  <text id="mg_county_desc"></text>
+	  <text id="mg_county_year"></text>
+	  <text id="mg_county_data"></text>
+	</g>
+	<g id="mg_scale_g">
+	  <g id="mg_scale_axis" class="axis"></g>
+	  <rect id="scale_neg_rect" height='14' fill="url(#neg_gradient)"></rect>
+	  <rect id="scale_pos_rect" height='14' fill="url(#pos_gradient)"></rect>
+	</g>
+	<g id="mg_top_g">
+	</g>
+	<g id="mg_bar_g">
+	  <g id="mg_bar_chart">
+	    <g id="mg_bar_rects"></g>
+	    <g id="mg_bar_numbers"></g>
+	  </g>
+	  <g id="mg_bar_labels"></g>
+	</g>
+      </svg>
+      <select class="year mg_dropdown"></select>
+      <select class="type mg_dropdown"></select>
+      <select class="category mg_dropdown"></select>
+    </div>
+
+<script>
+
+ // Global Variables
+ var svg_width = 900, svg_height = 500
+ , region_names = ['RPA Region', 'New York City', 'Suburbs']
+ , county_selected = false
+ , county_selected_FIPS = ""
+ , barchart_panel = 20 // Make this match the mg_description left: attribute
+ , column_offset = 120 
+ , second_column = barchart_panel + column_offset
+ , line_placement = 10
+ , line_height = 20
+ , boundaryList = []
+ , transition_time = 300;
+</script>
+
+<script type="text/javascript" src="migration_map.js"></script>
+<script type="text/javascript" src="migration_timeseries.js"></script>
+
+<script type="text/javascript">
+ $(window).load(function(){
+   var last_div = $('.mg_description').length - 1;
+   $('.mg_description').eq(last_div).height($('.mg_description').eq(last_div).height() + $(window).height());
+
+   $(document).ready(function() { // Must wait for Typekit to load for scrolltoFixed to capture correct div heights
+     $('#mg_box').scrollToFixed({ marginTop: 16, zIndex: 0, limit: $('.mg_description').eq(last_div).offset().top + $('.mg_description').eq(last_div).height() + 5000 })
+   });
+
+ });  
+
+</script>
+
+</body>
+</html>
