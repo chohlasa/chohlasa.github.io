@@ -105,7 +105,7 @@ d3.json('Migration_RawCategories_RPA-Counties_WiscNetMigration.json', function(d
     var fips_list = [];
     data[current_year].forEach(function(value,index,array) {fips_list.push(value.fips)});
     bar_order.domain(fips_list);
-    bar_order.rangeBands([0,h-margin.top-margin.bottom],0.5,0);
+    bar_order.rangeBands([0,h-margin.top-margin.bottom+25],0.5,0);
     d3.select('#mg_bar_chart').attr('transform', 'translate (' + column_offset + ',0)')
     var bars = d3.select('#mg_bar_rects')
 		 .selectAll('rect')
