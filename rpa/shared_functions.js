@@ -61,14 +61,14 @@ function data_summer(data,type,category,age_range) {
 };
 
 function updateHeaders(current_type, current_category, current_level, current_year) {
-      var header_type = (current_type == "rates") ? "migrants per 1,000 residents " : "migrants ";
+      var header_type = (current_type == "rates") ? "migrants per 1,000 residents" : "migrants";
       var header_category = (current_category == "total") ? " " : current_category.toProperCase() + " ";
 
       var header_level = '';
       if (current_level[0] == "0" && current_level[1] == "79") {
 	  var header_level = "";
       } else {
-	  var header_level = "for ages " + current_level[0];
+	  var header_level = ", ages " + current_level[0];
       }
       
       if (current_level[0] != "0" && current_level[1] == '79') {
@@ -81,7 +81,7 @@ function updateHeaders(current_type, current_category, current_level, current_ye
       d3.select('#mg_bar_header')
 	.text(header);
 
-      var subheader_type = ((current_type == "rates") ? " net migration " : " migration ");
+      var subheader_type = ((current_type == "rates") ? " net migration" : " migration");
       var header_category = (current_category == "total") ? " Total " : current_category.toProperCase() + " ";
       var subheader = header_category + subheader_type + header_level
       d3.select('#mg_county_desc')

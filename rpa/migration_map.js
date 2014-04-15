@@ -1,14 +1,14 @@
 // Local variables
 // Establish canvas parameters
-var margin = {top: 30, right:10, bottom:0, left:440}
+var margin = {top: 45, right:20, bottom:0, left:400}
 , w = svg_width - margin.right - margin.left
 , h = svg_height - margin.top - margin.bottom
 , bar_chart_width = 380 - column_offset
-, legend_width = svg_width - margin.left - 225;
 
-// Set location of 
-var county_x = w-260
+// Set location of county description and legend
+var county_x = w-290
 , county_y = h-145
+, legend_width = svg_width - margin.left - county_x - margin.right;
 
 // Initialize projection, path, colors, and scales
 var projection = d3.geo.conicConformal()
@@ -38,7 +38,7 @@ scale_g = d3.select('#mg_scale_g')
 		   .attr("transform", 'translate (' + (margin.left + county_x) + ',' + (margin.top + county_y + line_height*4.5) + ')');
 d3.select('#mg_scale_axis').attr("transform", 'translate (0,16)');
 
-////  Set size of svg		
+////  Set size of background reset rectangle
 d3.select('#mg_bknd').attr({ 'width': w + margin.left + margin.right,
 			     'height': h + margin.top + margin.bottom });
 
@@ -51,11 +51,19 @@ d3.select('#mg_county_desc').attr('y', line_height);
 d3.select('#mg_county_year').attr('y', line_height*2);
 d3.select('#mg_county_data').attr('y', line_height*3);
 
-////  Move type & category select elements		
-d3.select('.year.mg_dropdown').style({'left': (margin.left + 145) + 'px', 'top': line_placement + 'px'});	 
-d3.select('.type.mg_dropdown').style({'left': (margin.left + 245) + 'px', 'top': line_placement + 'px'});
-d3.select('.category.mg_dropdown').style({'left': (margin.left + 335) + 'px', 'top': line_placement + 'px'});
-d3.select('#mg_select_title').attr({'x': (margin.left + 30) + 'px', 'y': (line_placement + 13) + 'px'});
+////  Move type & category select elements	
+var select_title_offset = margin.left + 80
+    , selects_box_offsets = {year: select_title_offset+ 115, 
+			     type: select_title_offset+215, 
+			     category: select_title_offset+ 305};
+d3.select('#mg_select_title').attr({'x': select_title_offset + 'px', 
+				    'y': (line_placement + 13) + 'px'});
+d3.select('.year.mg_dropdown').style({'left': selects_box_offsets.year + 'px', 
+				      'top': line_placement + 'px'});
+d3.select('.type.mg_dropdown').style({'left': selects_box_offsets.type + 'px', 
+				      'top': line_placement + 'px'});
+d3.select('.category.mg_dropdown').style({'left': selects_box_offsets.category + 'px', 
+					  'top': line_placement + 'px'});
 
 //// Move bar chart title
 d3.select('#mg_bar_header').attr({'x': (barchart_panel) + 'px', 'y': (line_placement + 15) + 'px'});
@@ -77,7 +85,7 @@ d3.json('Migration_RawCategories_RPA-Counties_WiscNetMigration.json', function(d
     
     // Center map and scale map to fit in g-group
     var b = mapbounds(json, true),
-    s = 0.95 / Math.max((b[1][0] - b[0][0]) / w, (b[1][1] - b[0][1]) / h),
+    s = 1 / Math.max((b[1][0] - b[0][0]) / w, (b[1][1] - b[0][1]) / h),
     t = [(w - s * (b[1][0] + b[0][0])) / 2, (h - s * (b[1][1] + b[0][1])) / 2];
     projection.scale(s)
 	      .translate(t);

@@ -17,10 +17,21 @@
    .mg_clear {
      clear: both;
    }
+
+   #mg_container {
+     width: 100%;
+   }
+
+   #mg_box {
+     margin-left: auto;
+     margin-right: auto;
+     width: 915px;
+   }
    
    /* Colors ****************** */		
-   #mg_bknd {
-     fill: #E8E8E8;
+   #mg_container, #mg_svg {
+     background-color: #E8E8E8;
+     fill: #E8E8E8
    }
 
    .mg_geoarea, rect.mg_bar {
@@ -79,7 +90,7 @@
    text.mg_bar,
    #mg_timeseries_chart text,
    .axis text {
-     font-size: 0.7em;
+     font-size: 0.8em;
    }
    
    .mg_bold {
@@ -132,6 +143,7 @@
 
 <body>
 
+  <div id='mg_container'>
     <div id='mg_box'>
       <svg id="mg_svg">
 	<defs>
@@ -173,11 +185,12 @@
       <select class="type mg_dropdown"></select>
       <select class="category mg_dropdown"></select>
     </div>
+  </div>
 
 <script>
 
  // Global Variables
- var svg_width = 900, svg_height = 500
+ var svg_width = 915, svg_height = 600
  , region_names = ['RPA Region', 'New York City', 'Suburbs']
  , county_selected = false
  , county_selected_FIPS = ""
