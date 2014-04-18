@@ -61,7 +61,7 @@ function data_summer(data,type,category,age_range) {
 };
 
 function updateHeaders(current_type, current_category, current_level, current_year) {
-      var header_type = (current_type == "rates") ? "migrants per 1,000 residents" : "migrants";
+      var header_type = (current_type == "rates") ? "migrants per 100 residents" : "migrants";
       var header_category = (current_category == "total") ? " " : current_category.toProperCase() + " ";
 
       var header_level = '';
