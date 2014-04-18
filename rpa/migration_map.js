@@ -52,18 +52,18 @@ d3.select('#mg_county_year').attr('y', line_height*2);
 d3.select('#mg_county_data').attr('y', line_height*3);
 
 ////  Move type & category select elements	
-var select_title_offset = margin.left + 80
+var select_title_offset = margin.left + 180
     , selects_box_offsets = {year: select_title_offset+ 115, 
 			     type: select_title_offset+215, 
-			     category: select_title_offset+ 305};
+			     category: select_title_offset+215/*305*/};
 d3.select('#mg_select_title').attr({'x': select_title_offset + 'px', 
-				    'y': (line_placement + 13) + 'px'});
+				    'y': (line_placement + 15) + 'px'});
 d3.select('.year.mg_dropdown').style({'left': selects_box_offsets.year + 'px', 
-				      'top': line_placement + 'px'});
+				      'top': line_placement + 2 + 'px'});
 d3.select('.type.mg_dropdown').style({'left': selects_box_offsets.type + 'px', 
-				      'top': line_placement + 'px'});
+				      'top': line_placement + 2 + 'px'});
 d3.select('.category.mg_dropdown').style({'left': selects_box_offsets.category + 'px', 
-					  'top': line_placement + 'px'});
+					  'top': line_placement + 2 + 'px'});
 
 //// Move bar chart title
 d3.select('#mg_bar_header').attr({'x': (barchart_panel) + 'px', 'y': (line_placement + 15) + 'px'});
@@ -421,7 +421,7 @@ d3.json('Migration_RawCategories_RPA-Counties_WiscNetMigration.json', function(d
     }
       
     // Default selection (run this when opening page)
-    updateMig('total','rates',['20','34']);
+    updateMig('total','migrants',['20','34']);
     
   })		
   

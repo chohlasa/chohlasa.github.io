@@ -61,8 +61,8 @@ function data_summer(data,type,category,age_range) {
 };
 
 function updateHeaders(current_type, current_category, current_level, current_year) {
-      var header_type = (current_type == "rates") ? "migrants per 100 residents" : "migrants";
-      var header_category = (current_category == "total") ? " " : current_category.toProperCase() + " ";
+      var header_type = (current_type == "rates") ? "people per 100 residents" : "people who have moved to the region, by county";
+      var header_category = (current_category == "total") ? "Total " : current_category + " ";
 
       var header_level = '';
       if (current_level[0] == "0" && current_level[1] == "79") {
@@ -77,13 +77,14 @@ function updateHeaders(current_type, current_category, current_level, current_ye
 	  header_level += "-" + current_level[1];
       }
       
-      var header = "Number of " + header_category + header_type + header_level;
-      d3.select('#mg_bar_header')
-	.text(header);
+      var header = "Net number of " + header_category + header_type + header_level;
+      // d3.select('#mg_bar_header')
+      // 	.text(header);
+      d3.select('#mg_bar_header').text("Net number of " + header_type);
+    
 
       var subheader_type = ((current_type == "rates") ? " net migration" : " migration");
-      var header_category = (current_category == "total") ? " Total " : current_category.toProperCase() + " ";
-      var subheader = header_category + subheader_type + header_level
+      var subheader = header_category.toProperCase() + subheader_type + header_level
       d3.select('#mg_county_desc')
 	.text(subheader);
 
