@@ -203,20 +203,6 @@
 </script>
 
 <script type="text/javascript" src="migration_map.js"></script>
-<script type="text/javascript" src="migration_timeseries.js"></script>
-
-<script type="text/javascript">
- $(window).load(function(){
-   var last_div = $('.mg_description').length - 1;
-   $('.mg_description').eq(last_div).height($('.mg_description').eq(last_div).height() + $(window).height());
-
-   $(document).ready(function() { // Must wait for Typekit to load for scrolltoFixed to capture correct div heights
-     $('#mg_box').scrollToFixed({ marginTop: 16, zIndex: 0, limit: $('.mg_description').eq(last_div).offset().top + $('.mg_description').eq(last_div).height() + 5000 })
-   });
-
- });  
-
-</script>
 
 </body>
 </html>
