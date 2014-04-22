@@ -177,13 +177,9 @@ d3.json('Crime.json', function(json) {
 	scale_axis.scale(legend_scale);
 	d3.select('#mg_scale_axis').call(scale_axis);
 
-	d3.select("#scale_neg_rect").attr({
+	d3.select("#scale_rect").attr({
 	    'x': legend_scale(data_min),
-	    'width': legend_scale(0)
-	});
-	d3.select("#scale_pos_rect").attr({
-	    'x': legend_scale(0),
-	    'width': (legend_scale(data_max)-legend_scale(0))
+	    'width': (legend_scale(data_max)-legend_scale(data_min))
 	});
 
 	// CALCULATE DATA FROM SELECTION
