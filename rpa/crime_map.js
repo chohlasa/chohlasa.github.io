@@ -21,9 +21,8 @@ var projection = d3.geo.conicConformal()
 , legend_scale = d3.scale.linear().range([0,legend_width])
 , bar_scale = d3.scale.linear().range([0,bar_chart_width])
 , bar_order = d3.scale.ordinal()
-, rounded_pct_format = d3.format("p")
-, pct_format = d3.format(".2%")
-, scale_axis = d3.svg.axis().orient('bottom').ticks(5).tickFormat(rounded_pct_format);
+, pct_format = d3.format("%")
+, scale_axis = d3.svg.axis().orient('bottom').ticks(5).tickFormat(pct_format);
 
 // Transform base elements
 var svg = d3.select('#mg_svg') // Enclosing svg

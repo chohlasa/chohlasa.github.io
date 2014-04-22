@@ -71,10 +71,10 @@ function countyName(county_name) {
 };
 
 function countyDataUpdate(county_data) {
-    suffix = "% change"
+    suffix = " change"
 
     d3.select('#mg_county_data')
-	.text(toCommas(county_data) + suffix);
+	.text(pct_format(county_data) + suffix);
 
     county_selected = true;
 }
