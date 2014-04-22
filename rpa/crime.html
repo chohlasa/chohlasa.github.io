@@ -12,7 +12,7 @@
 
    body {
      margin: 0px;
-     background-color: rgb(232, 232, 232);
+     background-color: #EFEFEF;
    }
 
    .mg_clear {
@@ -31,12 +31,12 @@
    
    /* Colors ****************** */		
    #mg_container, #mg_svg {
-     background-color: rgb(232, 232, 232);
-     fill: rgb(232, 232, 232);
+     background-color: #EFEFEF;
+     fill: #EFEFEF
    }
 
-   .mg_geoarea, rect.mg_bar {
-     stroke: #CCC;
+   .mg_geoarea {
+     stroke: #EFEFEF;
      stroke-width: 1px;
    }
    
@@ -79,6 +79,10 @@
    /* Font formattting *******************/
    #mg_box text {
      fill: #3F3F3F;
+   }
+
+   #mg_bar_header {
+     font-size: 1.25em;
    }
 
    #mg_title {
@@ -130,7 +134,7 @@
 		
   </style>
 	
-  <script type="text/javascript" src="shared_functions.js"></script>
+  <script type="text/javascript" src="crime_functions.js"></script>
 
 </head>
 
@@ -151,13 +155,12 @@
 	  </lineargradient>
 	</defs>
 	<rect id="mg_bknd" />
-	<text id="mg_select_title">Select options:</text>
-	<text id="mg_bar_header" class="mg_bold"></text>
+	<text id="mg_bar_header" class="mg_bold">Change in criminal offenses per capita, 2000-2011</text>
 	<g id="mg_map_g"></g>
 	<g id="mg_county_g">
 	  <text id="mg_county_name" class="mg_bold"></text>
-	  <text id="mg_county_desc"></text>
-	  <text id="mg_county_year"></text>
+	  <text id="mg_county_desc">Change in criminal offenses per capita</text>
+	  <text id="mg_county_year">2000-2011</text>
 	  <text id="mg_county_data"></text>
 	</g>
 	<g id="mg_scale_g">
@@ -175,8 +178,6 @@
 	  <g id="mg_bar_labels"></g>
 	</g>
       </svg>
-      <select class="year mg_dropdown"></select>
-      <select class="category mg_dropdown"></select>
     </div>
   </div>
 
@@ -188,7 +189,7 @@
  , county_selected = false
  , county_selected_FIPS = ""
  , barchart_panel = 20 // Make this match the mg_description left: attribute
- , column_offset = 120 
+ , column_offset = 150 
  , second_column = barchart_panel + column_offset
  , line_placement = 10
  , line_height = 20
@@ -196,7 +197,9 @@
  , transition_time = 300;
 </script>
 
-<script type="text/javascript" src="migration_map.js"></script>
+<script type="text/javascript" src="crime_map.js"></script>
+
+</script>
 
 </body>
 </html>
