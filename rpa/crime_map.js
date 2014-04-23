@@ -61,7 +61,7 @@ d3.select('#mg_bar_header').attr({'x': (barchart_panel) + 'px', 'y': (line_place
 // DATA CHART MAP ////////////////////////////////////////////////////////////////////////
 
 // Open shapefile
-d3.json('Crime.json', function(json) {
+d3.json('CrimeSmall.json', function(json) {
     
     // Shortcut to features
     var features = json.features;
