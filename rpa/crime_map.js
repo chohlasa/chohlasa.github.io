@@ -59,7 +59,6 @@ d3.select('#mg_bar_header').attr({'x': (barchart_panel) + 'px', 'y': (line_place
 
 
 // DATA CHART MAP ////////////////////////////////////////////////////////////////////////
-
 // Open shapefile
 d3.json('CrimeSmall.json', function(json) {
     
@@ -145,7 +144,7 @@ d3.json('CrimeSmall.json', function(json) {
 	    outlineCounty(d.properties.CTFIPS);
 	    outlineBar(d.properties.CTFIPS);
 	    countyName(d.properties.COUNTY + ', ' + d.properties.STATE);
-	    countyDataUpdate(d.properties.CrimeChang)
+	    countyDataUpdate(d.properties.ChangeCrim)
 	    markSelected(d.properties.CTFIPS);
 	});
     // Set up chart interaction
@@ -183,7 +182,7 @@ d3.json('CrimeSmall.json', function(json) {
 
 	// CALCULATE DATA FROM SELECTION
 	var this_data = [];
-	features.forEach(function(value, index, array) {this_data.push({ value:value.properties.CrimeChang,FIPS:value.properties.CTFIPS,name:value.properties.COUNTY + ', ' + value.properties.STPOSTAL}); });
+	features.forEach(function(value, index, array) {this_data.push({ value:value.properties.ChangeCrim,FIPS:value.properties.CTFIPS,name:value.properties.COUNTY + ', ' + value.properties.STPOSTAL}); });
 	
 	// Update bars
 	fips_list = []; // Make ordered list for sorting bars
@@ -228,7 +227,7 @@ d3.json('CrimeSmall.json', function(json) {
 	map.data(features)
 	    .transition()
 	    .duration(transition_time)
-	    .attr('fill', function(d) {return color(d.properties.CrimeChang);});
+	    .attr('fill', function(d) {return color(d.properties.ChangeCrim);});
     }
     
     // Default selection (run this when opening page)
