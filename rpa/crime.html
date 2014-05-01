@@ -12,7 +12,7 @@
 
    body {
      margin: 0px;
-     background-color: #EFEFEF;
+     background-color: rgb(232, 232, 232);
    }
 
    .mg_clear {
@@ -31,24 +31,18 @@
    
    /* Colors ****************** */		
    #mg_container, #mg_svg {
-     background-color: #EFEFEF;
-     fill: #EFEFEF
+     background-color: rgb(232, 232, 232);
+     fill: rgb(232, 232, 232)
    }
 
-   .mg_geoarea {
-     stroke: #EFEFEF;
+   .mg_geoarea, rect.mg_bar {
+     stroke: #CCC;
      stroke-width: 1px;
    }
    
    .axis path {
      stroke: #888;
      stroke-width: 1;
-     fill: none;
-   }
-
-   .ts_chartlines path {
-     stroke-width: 3;
-     stroke: #888;
      fill: none;
    }
 
@@ -145,9 +139,13 @@
     <div id='mg_box'>
       <svg id="mg_svg">
 	<defs>
-	  <lineargradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%" spreadMethod="pad">
-	    <stop offset="0%" stop-color="#BBDCED" stop-opacity="1"></stop>
-	    <stop offset="100%" stop-color="#007EAD" stop-opacity="1"></stop>
+	  <lineargradient id="neg_gradient" x1="0%" y1="0%" x2="100%" y2="0%" spreadMethod="pad">
+	    <stop offset="0%" stop-color="#4FB3CF" stop-opacity="1"></stop>
+	    <stop offset="100%" stop-color="white" stop-opacity="1"></stop>
+	  </lineargradient>
+	  <lineargradient id="pos_gradient" x1="0%" y1="0%" x2="100%" y2="0%" spreadMethod="pad">
+	    <stop offset="0%" stop-color="white" stop-opacity="1"></stop>
+	    <stop offset="100%" stop-color="#FDB924" stop-opacity="1"></stop>
 	  </lineargradient>
 	</defs>
 	<rect id="mg_bknd" />
@@ -161,7 +159,8 @@
 	</g>
 	<g id="mg_scale_g">
 	  <g id="mg_scale_axis" class="axis"></g>
-	  <rect id="scale_rect" height='14' fill="url(#gradient)"></rect>
+	  <rect id="scale_neg_rect" height='14' fill="url(#neg_gradient)"></rect>
+	  <rect id="scale_pos_rect" height='14' fill="url(#pos_gradient)"></rect>
 	</g>
 	<g id="mg_top_g">
 	</g>

@@ -17,7 +17,7 @@ var projection = d3.geo.conicConformal()
 		     .translate([0,0])
 , path = d3.geo.path()
 	   .projection(projection)
-, color = d3.scale.linear().range(["#BBDCED", "#007EAD"])
+, color = d3.scale.linear().range(["#007EAD", "white", "#FDB924" ])
 , legend_scale = d3.scale.linear().range([0,legend_width])
 , bar_scale = d3.scale.linear().range([0,bar_chart_width])
 , bar_order = d3.scale.ordinal()
@@ -87,7 +87,7 @@ d3.json('CrimeSmall.json', function(json) {
     var fips_list = [];
     features.forEach(function(value,index,array) {fips_list.push(value.properties.CTFIPS)});
     bar_order.domain(fips_list);
-    bar_order.rangeBands([0,h-margin.top-margin.bottom],0.5,0);
+    bar_order.rangeBands([0,h-margin.top-margin.bottom-10],0.5,0);
     d3.select('#mg_bar_chart').attr('transform', 'translate (' + column_offset + ',0)')
     var bars = d3.select('#mg_bar_rects')
 	    .selectAll('rect')
@@ -165,19 +165,23 @@ d3.json('CrimeSmall.json', function(json) {
 
 	// Establish fixed bounds for color scale
 	var data_min = -.4
-	    , data_max = .1;
+	    , data_max = .4;
 
 	// Draw scale
-	color.domain([data_min, data_max]);
+	color.domain([data_min, 0, data_max]);
 	bar_scale.domain([data_min,data_max]);
 	legend_scale.domain([data_min, data_max]);
 
 	scale_axis.scale(legend_scale);
 	d3.select('#mg_scale_axis').call(scale_axis);
 
-	d3.select("#scale_rect").attr({
+	d3.select("#scale_neg_rect").attr({
 	    'x': legend_scale(data_min),
-	    'width': (legend_scale(data_max)-legend_scale(data_min))
+	    'width': legend_scale(0)
+	});
+	d3.select("#scale_pos_rect").attr({
+	    'x': legend_scale(0),
+	    'width': (legend_scale(data_max)-legend_scale(0))
 	});
 
 	// CALCULATE DATA FROM SELECTION
