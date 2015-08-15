@@ -39,6 +39,34 @@
 
 <svg id='calendar'></svg>
 
+<script>
+
+birthday = prompt('Enter your birthday', '1986-03-20');
+birthday = birthday.split('-');
+
+if (birthday.length != 3) {
+	alert("Incorrect format. Using Alex's birthday.");
+
+	var firstDay = 19,
+	firstMonth = 2,
+	firstYear = 1982;
+
+} else {
+
+	var firstDay = parseInt(birthday[2]),
+	firstMonth = parseInt(birthday[1]),
+	firstYear = parseInt(birthday[0]);
+
+}
+
+console.log(birthday);
+console.log(firstDay)
+console.log(firstMonth)
+console.log(firstYear)
+
+
+</script>
+
 <script src="d3.min.js" charset="utf-8"></script>
 <script> 
 
@@ -65,11 +93,7 @@ var today = new Date();
 	nowMonth = today.getMonth() + 1,
 	nowYear = today.getFullYear();
 
-var firstDay = 19,
-	firstMonth = 2,
-	firstYear = 1982;
-
-var years = range(100).map(function(x) {return x+firstYear});
+var years = range(75).map(function(x) {return x+firstYear});
 
 var monthLength = {};
 
