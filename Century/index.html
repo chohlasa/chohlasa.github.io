@@ -13,24 +13,36 @@
 		font-family: Arial;
 	}
 
-	.year > .calText, .monthLabel {
+	.year > .calText {
 		font-size: 2px;
 		font-weight: bold;
 	}
 
+	.monthLabel {
+		font-size: 4px;
+		font-weight: bold;
+	}
+
 	.day > .calText {
-		font-size: 1px;
+		font-size: 1.25px;
 		fill: white;
 		text-anchor: middle;
+		font-weight: 900;
 	}
 
-	.future circle {
+/*	.future circle {
 		fill: lightgray;
-	}
+	}*/
 
-	.preFirstDay, .nonLeapYear {
+	.preFirstDay, .postLastDay, .nonLeapYear {
 		display: none;
 	}
+
+/*	.future circle, .year circle, .day circle {
+		fill: white;
+		stroke: black;
+		stroke-width: 0.1px;
+	}*/
 
 </style>
 
@@ -41,15 +53,15 @@
 
 <script>
 
-birthday = prompt('Enter your birthday', '1986-03-20');
+birthday = prompt('Enter your birthday', '1980-01-01');
 birthday = birthday.split('-');
 
 if (birthday.length != 3) {
-	alert("Incorrect format. Using Alex's birthday.");
+	alert("Incorrect format. Using default birthday.");
 
-	var firstDay = 19,
-	firstMonth = 2,
-	firstYear = 1982;
+	var firstDay = 1,
+	firstMonth = 1,
+	firstYear = 1980;
 
 } else {
 
@@ -82,18 +94,20 @@ var temp;
 
 var svg = d3.select('#calendar');
 
-var lengthMonth = {29: ['Februrary'],
+var lengthMonth = {29: ['February'],
 		  30: ['April', 'June', 'September', 'November'],
 		  31: ['January', 'March', 'May', 'July', 'August', 'October', 'December']};
 
-var monthOrder = ['January', 'Februrary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']; 
+var monthOrder = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']; 
 
 var today = new Date();
 	nowDay = today.getDate(),
 	nowMonth = today.getMonth() + 1,
 	nowYear = today.getFullYear();
 
-var years = range(75).map(function(x) {return x+firstYear});
+var numYears = 100;
+
+var years = range(numYears + 1).map(function(x) {return x+firstYear});
 
 var monthLength = {};
 
@@ -112,11 +126,12 @@ for (i=0; i<monthOrder.length; i++) {
 }
 
 var daySpacing = 3,
-	yearSpacing = 7.8,
+	yearSpacing = 4.8,
 	yearPadding = 5, 
-	monthPadding = 1,
+	monthPadding = 5,
 	monthSpacing = 3,
-	textAdjust = 0.4,
+	textYAdjust = 0.445,
+	textXAdjust = 0.03,
 	radiusFactor = 2.6;
 
 svg.selectAll('.monthLabel')
@@ -126,14 +141,14 @@ svg.selectAll('.monthLabel')
 	.classed('calText', true)
 	.classed('monthLabel', true)
 	.text(function(d) {return d;})
-	.attr('transform', function(d, i) {return 'translate (' + ((yearPadding + daySpacing - 1) + (monthLength[d]['daysBefore'] * daySpacing) + (i * monthSpacing)) + ', ' + 2 + ')'; })
+	.attr('transform', function(d, i) {return 'translate (' + ((yearPadding + daySpacing - 1) + (monthLength[d]['daysBefore'] * daySpacing) + (i * monthSpacing)) + ', ' + 5 + ')'; })
 
 svg.selectAll('.year')
 	.data(years)
 	.enter()
 	.append('g')
 	.classed('year', true)
-	.attr('transform', function(d,i) {return 'translate (0,' + (((i + 1) * yearSpacing) + monthPadding)  + ')'})
+	.attr('transform', function(d,i) {return 'translate (0,' + (((i + 1) * yearSpacing) + monthPadding) + ')'})
 	.selectAll('months')
 	.data(monthOrder)
 	.enter()
@@ -165,6 +180,16 @@ svg.selectAll('.year')
 				|| ((circleYear <= firstYear) && (circleMonth < firstMonth))
 				|| (circleYear < firstYear));
 	})
+	.classed('postLastDay', function(d,i) {
+		circleInfo = getCircleInfo(this, d);
+		circleYear = circleInfo[0];
+		circleMonth = circleInfo[1];
+		circleDay = circleInfo[2];
+
+		return (((circleYear >= firstYear + numYears) && (circleMonth >= firstMonth) && (circleDay > firstDay))
+				|| ((circleYear >= firstYear + numYears) && (circleMonth > firstMonth))
+				|| (circleYear > firstYear + numYears));
+	})
 	.classed('nonLeapYear', function(d,i) {
 		circleInfo = getCircleInfo(this, d);
 		circleYear = circleInfo[0];
@@ -181,13 +206,13 @@ d3.selectAll('.year')
 	.append('text')
 	.classed('calText', true)
 	.text(function(d) {return d})
-	.attr('transform', 'translate (0,' + parseInt(d3.select('.year .calText').style('font-size')) * 0.4 + ')');
+	.attr('transform', 'translate (0,' + parseInt(d3.select('.year .calText').style('font-size')) * (3 * textYAdjust / 4) + ')');
 
 d3.selectAll('.day')
 	.append('text')
 	.classed('calText', true)
 	.text(function(d,i) {return d+1})
-	.attr('transform', 'translate (0,' + parseInt(d3.select('.day .calText').style('font-size')) * 0.4 + ')');
+	.attr('transform', 'translate (' + (parseInt(d3.select('.day .calText').style('font-size')) * textXAdjust * -1) + ',' + parseInt(d3.select('.day .calText').style('font-size')) * textYAdjust + ')');
 
 
 function getCircleInfo(thisObj, d) {
